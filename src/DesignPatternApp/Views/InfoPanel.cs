@@ -11,18 +11,18 @@ public partial class InfoPanel : ViewBase
 
     protected override void RegisterToDocEvents()
     {
-        document.ShapesChanged += Document_ShapesChanged;
-        document.SelectionChanged += Document_SelectionChanged;
+        Document.ShapesChanged += Document_ShapesChanged;
+        Document.SelectionChanged += Document_SelectionChanged;
     }
 
     protected override void UnRegisterToDocEvents()
     {
-        document.ShapesChanged -= Document_ShapesChanged;
-        document.SelectionChanged -= Document_SelectionChanged;
-        clearItems();
+        Document.ShapesChanged -= Document_ShapesChanged;
+        Document.SelectionChanged -= Document_SelectionChanged;
+        ClearItems();
     }
 
-    private void Document_ShapesChanged(object sender, EventArgs e)
+    private void Document_ShapesChanged(object? sender, EventArgs e)
     {
         try
         {
@@ -30,13 +30,15 @@ public partial class InfoPanel : ViewBase
 
             listBox.Items.Clear();
 
-            if (document == null)
+            if (Document == null)
                 return;
 
-            foreach (Shape s in document.Shapes)
+            foreach (var s in Document.Shapes)
+            {
                 listBox.Items.Add(s.GetDescription());
+            }
 
-            listBox.SelectedIndex = document.SelectedShapeIndex;
+            listBox.SelectedIndex = Document.SelectedShapeIndex;
         }
         finally
         {
@@ -44,15 +46,15 @@ public partial class InfoPanel : ViewBase
         }
     }
 
-    private void Document_SelectionChanged(object sender, EventArgs e)
+    private void Document_SelectionChanged(object? sender, EventArgs e)
     {
-        if (document == null)
+        if (Document == null)
             return;
 
         try
         {
             ignoreIndexChanged = true;
-            listBox.SelectedIndex = document.SelectedShapeIndex;
+            listBox.SelectedIndex = Document.SelectedShapeIndex;
         }
         finally
         {
@@ -68,7 +70,7 @@ public partial class InfoPanel : ViewBase
         App.Instance.SetSelectedShape(listBox.SelectedIndex);
     }
 
-    private void clearItems()
+    private void ClearItems()
     {
         try
         {

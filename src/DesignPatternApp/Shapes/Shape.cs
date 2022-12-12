@@ -4,36 +4,28 @@ namespace DesignPatternApp;
 
 public abstract class Shape
 {
-    // Annak érdekében, hogy később a Memento minta megvalósítása során az alakzatot 
-    // és a másolatait össze tudjuk „találtatni”, az egyes alakzatokhoz egy számazonosítót
-    // rendelünk, mely az alakzat és másolatai esetében ugyanazt az értéket veszi fel. 
-    public readonly int Id;
     // Az első még szabad azonosító (statikus !)
     private static int ShapeCounter;
 
-    // Ha -1-et adunk meg azonosítónak, a konstruktor generál egy új értéket
-    // és azt tárolja el. Minden más paraméterérték esetén az új alakzat azonosítója
-    // a paraméterben kapott érték lesz.
+    // Ha -1-et adunk meg azonosítónak, a konstruktor generál egy új értéket és azt tárolja el.
+    // Minden más paraméterérték esetén az új alakzat azonosítója a paraméterben kapott érték lesz.
     public Shape(Rectangle rectangle, int id = -1)
     {
         EnclosingRectangle = rectangle;
-        if (id == -1)
-            Id = ShapeCounter++;
-        else
-            Id = id;
+        Id = id == -1 ? ShapeCounter++ : id;
     }
+
+    // Annak érdekében, hogy később a Memento minta megvalósítása során az alakzatot 
+    // és a másolatait össze tudjuk „találtatni”, az egyes alakzatokhoz egy számazonosítót rendelünk,
+    // mely az alakzat és másolatai esetében ugyanazt az értéket veszi fel. 
+    public int Id { get; }
 
     public Rectangle EnclosingRectangle { get; private set; }
 
-    public Point Position
-    {
-        get
-        {
-            return EnclosingRectangle.Location;
-        }
-    }
+    public Point Position => EnclosingRectangle.Location;
 
     public abstract void OnDraw(Graphics g, Brush brush);
+
     public abstract Shape CreateCopy();
 
     public void Draw(Graphics g, bool isSelected)
@@ -41,16 +33,17 @@ public abstract class Shape
         // Ha kiválasztott az alakzat, kék szaggatott téglalappal rajzoljuk ki a befoglalóját.
         if (isSelected)
         {
-            Pen pen = new Pen(Color.Blue);
-            pen.DashStyle = DashStyle.Dash;
-            g.DrawRectangle(pen, EnclosingRectangle);
+            g.DrawRectangle(
+                new Pen(Color.Blue)
+                {
+                    DashStyle = DashStyle.Dash
+                },
+                EnclosingRectangle);
         }
 
         // Kitöltéshez használt szín/ecset meghatározása: a kiválasztottat piros kitöltéssel.
-        Brush brush = isSelected ? Brushes.Red : Brushes.Black;
-
         // A tényleges kirajzolás, alakzat típus függő, így meghívunk egy abtrakt műveletet
-        OnDraw(g, brush);
+        OnDraw(g, isSelected ? Brushes.Red : Brushes.Black);
     }
 
     public void MoveTo(Point newPos)
@@ -72,7 +65,7 @@ public abstract class Shape
     // Lehetne ToString()
     public virtual string GetDescription()
     {
-        return string.Format("Enclosing rect: x={0}, y={1}, w={2}, h={3}", EnclosingRectangle.X, EnclosingRectangle.Y, EnclosingRectangle.Width, EnclosingRectangle.Height);
+        return $"Enclosing rect: x={EnclosingRectangle.X}, y={EnclosingRectangle.Y}, w={EnclosingRectangle.Width}, h={EnclosingRectangle.Height}";
     }
 
 }

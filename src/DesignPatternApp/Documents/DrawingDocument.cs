@@ -4,35 +4,29 @@ namespace DesignPatternApp.Documents;
 
 public class DrawingDocument : Document
 {
-    List<Shape> shapes = new List<Shape>();
-    private Shape selectedShape;
-
-    #region Events
-
     /// <summary>
     /// Akkor kerül elsütésre, ha a shapes lista, vagy annak valamelyik eleme módosul.
     /// </summary>
-    public event EventHandler ShapesChanged;
+    public event EventHandler? ShapesChanged;
     /// <summary>
     /// Akkor kerül elsütésre, ha a egy korábbitól eltérő alakzat került kiválasztásra.
     /// </summary>
-    public event EventHandler SelectionChanged;
+    public event EventHandler? SelectionChanged;
 
-    #endregion
+    private List<Shape> shapes = new List<Shape>();
 
     /// <summary>
     /// Visszaadja az alakzatok gyűjteményét.
     /// </summary>
-    public IEnumerable<Shape> Shapes
-    {
-        get { return shapes; }
-    }
+    public IEnumerable<Shape> Shapes => shapes;
+
+    private Shape? selectedShape;
 
     /// <summary>
     /// Az aktuálisan kiválasztott alakzatot adja vissza (null-t, ha nincs 
     /// alakzat kiválasztva), illetve módosításával új alakzat választható ki.
     /// </summary>
-    public Shape SelectedShape
+    public Shape? SelectedShape
     {
         get { return selectedShape; }
         set
@@ -43,52 +37,34 @@ public class DrawingDocument : Document
 
             selectedShape = value;
 
-            fireSelectionChanged();
+            SelectionChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 
     /// <summary>
-    /// Az aktuálisan kiválasztott alakzat indexét adja vissza (-1-et, ha nincs 
-    /// alakzat kiválasztva), illetve módosításával új alakzat választható ki.
+    /// Az aktuálisan kiválasztott alakzat indexét adja vissza (-1-et, ha nincs alakzat kiválasztva),
+    /// illetve módosításával új alakzat választható ki.
     /// </summary>
     public int SelectedShapeIndex
     {
         get
         {
-            for (int i = 0; i < shapes.Count; ++i)
-                if (shapes[i] == selectedShape)
-                    return i;
-            return -1;
+            return shapes.IndexOf(selectedShape);
         }
         set
         {
             if (value >= shapes.Count)
                 return;
-            if (value == -1)
-                SelectedShape = null;
-            else
-                SelectedShape = shapes[value];
+
+            SelectedShape = value == -1 ? null : shapes[value];
         }
-    }
-
-
-    void fireShapesChanged()
-    {
-        if (ShapesChanged != null)
-            ShapesChanged(this, null);
-    }
-
-    void fireSelectionChanged()
-    {
-        if (SelectionChanged != null)
-            SelectionChanged(this, null);
     }
 
     public Rect CreateRect(Rectangle enclosingRectangle)
     {
         var shape = new Rect(enclosingRectangle);
         shapes.Add(shape);
-        fireShapesChanged();
+        ShapesChanged?.Invoke(this, EventArgs.Empty);
         return shape;
     }
 
@@ -96,20 +72,14 @@ public class DrawingDocument : Document
     {
         var shape = new Ellipse(enclosingRectangle);
         shapes.Add(shape);
-        fireShapesChanged();
+        ShapesChanged?.Invoke(this, EventArgs.Empty);
         return shape;
     }
 
     public void RemoveShape(int shapeId)
     {
         // Kikeressük a shapeId azonosítójú alakzatot.
-        Shape shapeToRemove = null;
-        foreach (var shape in shapes)
-            if (shape.Id == shapeId)
-            {
-                shapeToRemove = shape;
-                break;
-            }
+        var shapeToRemove = shapes.SingleOrDefault(s => s.Id == shapeId);
 
         // Ha nem találtuk, nem csinálunk semmit
         if (shapeToRemove == null)
@@ -121,13 +91,14 @@ public class DrawingDocument : Document
 
         // Távolítsuk el az elemet
         shapes.Remove(shapeToRemove);
-        fireShapesChanged();
+
+        ShapesChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void Clear()
     {
         shapes.Clear();
-        fireShapesChanged();
+        ShapesChanged?.Invoke(this, EventArgs.Empty);
         SelectedShape = null;
     }
 }

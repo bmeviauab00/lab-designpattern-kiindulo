@@ -1,9 +1,11 @@
 ﻿namespace DesignPatternApp;
 
-public class Ellipse: Shape
+public class Ellipse : Shape
 {
-    public Ellipse(Rectangle rect, int id = -1) : base(rect, id)
-    { }
+    public Ellipse(Rectangle rect, int id = -1)
+        : base(rect, id)
+    {
+    }
 
     public override void OnDraw(Graphics g, Brush brush)
     {

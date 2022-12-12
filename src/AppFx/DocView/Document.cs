@@ -10,7 +10,6 @@ public abstract class Document
     /// <summary>
     /// Egy nézetet beregisztrál a dokumentumhoz.
     /// </summary>
-    /// <param name="v"></param>
     public void AttachView(IView v)
     {
         views.Add(v);

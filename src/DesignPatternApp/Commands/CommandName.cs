@@ -1,6 +1,6 @@
 ﻿namespace DesignPatternApp.Commands;
 
-static class CommandName
+public static class CommandName
 {
     public const string NewDocument = "NewDoc";
     public const string OpenDocument = "OpenDoc";

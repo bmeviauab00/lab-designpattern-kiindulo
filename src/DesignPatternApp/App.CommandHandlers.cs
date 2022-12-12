@@ -1,4 +1,5 @@
 ﻿using AppFx.CommandBinding;
+
 using DesignPatternApp.Commands;
 using DesignPatternApp.Documents;
 
@@ -10,115 +11,101 @@ partial class App
     {
         CloseDocument();
 
-        document = new DrawingDocument();
+        Document = new DrawingDocument();
+
         graphicsView = new GraphicsView();
         mainForm.SetLeftPanel(graphicsView);
-        graphicsView.SetDocumentAndRegisterToDocEvents(document);
-        infoPanel.SetDocumentAndRegisterToDocEvents(document);
+        graphicsView.SetDocumentAndRegisterToDocEvents(Document);
+        infoPanel.SetDocumentAndRegisterToDocEvents(Document);
 
-        #region Documents
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
-        #endregion
 
-        #region Tools
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, true);
-        #endregion
 
-        addTestData();
-    }
-
-    void addTestData()
-    {
-        document.CreateRect(new Rectangle(20, 100, 200, 100));
-        document.CreateRect(new Rectangle(150, 70, 300, 50));
-        document.CreateEllipse(new Rectangle(250, 300, 100, 100));
-
-        document.SelectedShapeIndex = 1;
-    }
-
-    void showNotImplemented()
-    {
-        MessageBox.Show("Not implemented.");
+        AddTestData();
     }
 
     public void OpenDocument()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
     public void CloseDocument()
     {
         // Nincs dokumentum megnyitva
-        if (document == null)
+        if (Document == null)
             return;
 
         graphicsView.RemoveDocumentAndUnregisterDocEvents();
         graphicsView.Dispose();
         infoPanel.RemoveDocumentAndUnregisterDocEvents();
-        document = null;
+        Document = null;
 
-        #region Documents
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
-        #endregion
 
-        #region Tools
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
-        #endregion
     }
 
     public void SaveDocument()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
     public void SaveAsDocument()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
-
-
-    #region Tools
 
     public void SelectShape()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
     public void ClearDocument()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
     public void UndoLast()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
     public void NewRect()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
     public void NewEllipse()
     {
-        showNotImplemented();
+        ShowNotImplemented();
     }
 
+    private void AddTestData()
+    {
+        Document.CreateRect(new Rectangle(20, 100, 200, 100));
+        Document.CreateRect(new Rectangle(150, 70, 300, 50));
+        Document.CreateEllipse(new Rectangle(250, 300, 100, 100));
 
-    #endregion
+        Document.SelectedShapeIndex = 1;
+    }
 
+    private void ShowNotImplemented()
+    {
+        MessageBox.Show("Not implemented.");
+    }
 }

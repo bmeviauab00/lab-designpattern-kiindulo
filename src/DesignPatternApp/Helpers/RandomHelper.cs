@@ -1,19 +1,23 @@
 ﻿namespace DesignPatternApp.Helpers;
 
-static class RandomHelper
+public static class RandomHelper
 {
-    static Random rand = new Random();
+    private static Random rand = new Random();
 
     /// <summary>
     /// Visszaad egy random számot, ami alakzatok létrehozásánál használható paraméterezésre.
     /// </summary>
-    static int getRandomValue()
+    private static int GetRandomValue()
     {
         return rand.Next(20, 250);
     }
 
+    /// <summary>
+    /// Visszaad egy random pozícióban lévő random méretű téglalapot
+    /// </summary>
+    /// <returns></returns>
     public static Rectangle GetRandomRect()
     {
-        return new Rectangle(getRandomValue(), getRandomValue(), getRandomValue(), getRandomValue());
+        return new Rectangle(GetRandomValue(), GetRandomValue(), GetRandomValue(), GetRandomValue());
     }
 }

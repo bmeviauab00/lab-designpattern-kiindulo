@@ -13,8 +13,7 @@ static class Program
         // ApplicationConfiguration.Initialize();
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        // A legjobb megközelítés a SystemAware lenne (alapértelmezett), de azzal nem jól skálázza
-        // a rajzokat nagy DPI-n.
+        // A legjobb megközelítés a SystemAware lenne (alapértelmezett), de azzal nem jól skálázza a rajzokat nagy DPI-n.
         Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
 
         var mainForm = new MainForm();
