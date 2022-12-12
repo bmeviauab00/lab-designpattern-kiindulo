@@ -1,11 +1,12 @@
-﻿using AppFx.CommandBinding;
+﻿using AppFx.Command;
+using AppFx.CommandBinding;
 
 using DesignPatternApp.Commands;
 using DesignPatternApp.Documents;
 
 namespace DesignPatternApp;
 
-partial class App
+public partial class App
 {
     public void NewDocument()
     {
@@ -29,7 +30,7 @@ partial class App
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, true);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, true);
 
-        AddTestData();
+        //AddTestData();
     }
 
     public void OpenDocument()
@@ -47,6 +48,8 @@ partial class App
         graphicsView.Dispose();
         infoPanel.RemoveDocumentAndUnregisterDocEvents();
         Document = null;
+
+        commandProcessor.Clear();
 
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
         CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
@@ -77,23 +80,36 @@ partial class App
 
     public void ClearDocument()
     {
-        ShowNotImplemented();
+        ExecuteCommand(new ClearCommand());
     }
 
     public void UndoLast()
     {
-        ShowNotImplemented();
+        UnexecuteLastCommand();
     }
 
     public void NewRect()
     {
-        ShowNotImplemented();
+        ExecuteCommand(new NewRectCommand());
     }
 
     public void NewEllipse()
     {
-        ShowNotImplemented();
+        ExecuteCommand(new NewEllipseCommand());
     }
+
+    private void ExecuteCommand(Command cmd)
+    {
+        commandProcessor.ExecuteCommand(cmd);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, commandProcessor.HasAny);
+    }
+
+    private void UnexecuteLastCommand()
+    {
+        commandProcessor.UnExecuteLastCommand();
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, commandProcessor.HasAny);
+    }
+
 
     private void AddTestData()
     {

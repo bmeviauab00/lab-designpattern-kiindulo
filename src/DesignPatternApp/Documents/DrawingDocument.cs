@@ -2,7 +2,7 @@
 
 namespace DesignPatternApp.Documents;
 
-public class DrawingDocument : Document
+public partial class DrawingDocument : Document
 {
     /// <summary>
     /// Akkor kerül elsütésre, ha a shapes lista, vagy annak valamelyik eleme módosul.
@@ -100,5 +100,17 @@ public class DrawingDocument : Document
         shapes.Clear();
         ShapesChanged?.Invoke(this, EventArgs.Empty);
         SelectedShape = null;
+    }
+
+    public IMemento CreateMemento()
+    {
+        return new Memento(shapes, selectedShape);
+    }
+
+    public void RestoreFromMemento(IMemento m)
+    {
+        m.GetState(out shapes, out selectedShape);
+        ShapesChanged?.Invoke(this, EventArgs.Empty);
+        SelectionChanged?.Invoke(this, EventArgs.Empty);
     }
 }
