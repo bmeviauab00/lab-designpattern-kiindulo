@@ -1,1 +1,1 @@
-# DesPattApp
+## Szoftvertechnikák Document View labor kiinduló és végállapot
