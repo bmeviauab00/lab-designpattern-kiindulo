@@ -1,4 +1,5 @@
-﻿using AppFx.CommandBinding;
+﻿using AppFx.Command;
+using AppFx.CommandBinding;
 
 using DesignPatternApp.Commands;
 using DesignPatternApp.Documents;
@@ -11,6 +12,8 @@ public partial class App
     private MainForm mainForm;
     private GraphicsView graphicsView;
     private InfoPanel infoPanel;
+
+    private readonly CommandProcessor commandProcessor = new CommandProcessor();
 
     private App()
     {
