@@ -1,4 +1,5 @@
 ﻿using AppFx.CommandBinding;
+using DesignPatternApp.Commands;
 
 namespace DesignPatternApp;
 

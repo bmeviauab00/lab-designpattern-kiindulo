@@ -1,8 +1,8 @@
 ﻿using AppFx.DocView;
 
-namespace DesignPatternApp;
+namespace DesignPatternApp.Documents;
 
-public class DrawingDocument: Document
+public class DrawingDocument : Document
 {
     List<Shape> shapes = new List<Shape>();
     private Shape selectedShape;
@@ -66,8 +66,8 @@ public class DrawingDocument: Document
                 return;
             if (value == -1)
                 SelectedShape = null;
-				else
-					SelectedShape = shapes[value];
+            else
+                SelectedShape = shapes[value];
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using AppFx.DocView;
+using DesignPatternApp.Documents;
 
 namespace DesignPatternApp;
 

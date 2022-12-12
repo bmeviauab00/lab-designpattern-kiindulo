@@ -1,6 +1,6 @@
-﻿namespace DesignPatternApp;
+﻿namespace DesignPatternApp.Helpers;
 
-static  class RandomHelper
+static class RandomHelper
 {
     static Random rand = new Random();
 

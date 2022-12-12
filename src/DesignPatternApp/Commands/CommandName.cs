@@ -1,4 +1,4 @@
-﻿namespace DesignPatternApp;
+﻿namespace DesignPatternApp.Commands;
 
 static class CommandName
 {
