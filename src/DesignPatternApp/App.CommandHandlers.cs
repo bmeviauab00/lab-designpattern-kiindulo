@@ -1,130 +1,111 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using AppFx.CommandBinding;
+﻿using AppFx.CommandBinding;
 
-namespace DesignPatternApp
+using DesignPatternApp.Commands;
+using DesignPatternApp.Documents;
+
+namespace DesignPatternApp;
+
+partial class App
 {
-    partial class App
+    public void NewDocument()
     {
-        public void NewDocument()
-        {
-            CloseDocument();
+        CloseDocument();
 
-            document = new DrawingDocument();
-            graphicsView = new GraphicsView();
-            mainForm.SetLeftPanel(graphicsView);
-            graphicsView.SetDocumentAndRegisterToDocEvents(document);
-            infoPanel.SetDocumentAndRegisterToDocEvents(document);
+        Document = new DrawingDocument();
 
-            #region Documents
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
-            #endregion
+        graphicsView = new GraphicsView();
+        mainForm.SetLeftPanel(graphicsView);
+        graphicsView.SetDocumentAndRegisterToDocEvents(Document);
+        infoPanel.SetDocumentAndRegisterToDocEvents(Document);
 
-            #region Tools
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, true);
-            #endregion
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
 
-            addTestData();
-        }
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, true);
 
-        void addTestData()
-        {
-            document.CreateRect(new Rectangle(20, 100, 200, 100));
-            document.CreateRect(new Rectangle(150, 70, 300, 50));
-            document.CreateEllipse(new Rectangle(250, 300, 100, 100));
+        AddTestData();
+    }
 
-            document.SelectedShapeIndex = 1;
-        }
+    public void OpenDocument()
+    {
+        ShowNotImplemented();
+    }
 
-        void showNotImplemented()
-        {
-            MessageBox.Show("Not implemented.");
-        }
+    public void CloseDocument()
+    {
+        // Nincs dokumentum megnyitva
+        if (Document == null)
+            return;
 
-        public void OpenDocument()
-        {
-            showNotImplemented();
-        }
+        graphicsView.RemoveDocumentAndUnregisterDocEvents();
+        graphicsView.Dispose();
+        infoPanel.RemoveDocumentAndUnregisterDocEvents();
+        Document = null;
 
-        public void CloseDocument()
-        {
-            // Nincs dokumentum megnyitva
-            if (document == null)
-                return;
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
 
-            graphicsView.RemoveDocumentAndUnregisterDocEvents();
-            graphicsView.Dispose();
-            infoPanel.RemoveDocumentAndUnregisterDocEvents();
-            document = null;
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
+    }
 
-            #region Documents
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
-            #endregion
+    public void SaveDocument()
+    {
+        ShowNotImplemented();
+    }
 
-            #region Tools
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
-            #endregion
-        }
+    public void SaveAsDocument()
+    {
+        ShowNotImplemented();
+    }
 
-        public void SaveDocument()
-        {
-            showNotImplemented();
-        }
+    public void SelectShape()
+    {
+        ShowNotImplemented();
+    }
 
-        public void SaveAsDocument()
-        {
-            showNotImplemented();
-        }
+    public void ClearDocument()
+    {
+        ShowNotImplemented();
+    }
 
+    public void UndoLast()
+    {
+        ShowNotImplemented();
+    }
 
-        #region Tools
+    public void NewRect()
+    {
+        ShowNotImplemented();
+    }
 
-        public void SelectShape()
-        {
-            showNotImplemented();
-        }
+    public void NewEllipse()
+    {
+        ShowNotImplemented();
+    }
 
-        public void ClearDocument()
-        {
-            showNotImplemented();
-        }
+    private void AddTestData()
+    {
+        Document.CreateRect(new Rectangle(20, 100, 200, 100));
+        Document.CreateRect(new Rectangle(150, 70, 300, 50));
+        Document.CreateEllipse(new Rectangle(250, 300, 100, 100));
 
-        public void UndoLast()
-        {
-            showNotImplemented();
-        }
+        Document.SelectedShapeIndex = 1;
+    }
 
-        public void NewRect()
-        {
-            showNotImplemented();
-        }
-
-        public void NewEllipse()
-        {
-            showNotImplemented();
-        }
-
-
-        #endregion
-
+    private void ShowNotImplemented()
+    {
+        MessageBox.Show("Not implemented.");
     }
 }

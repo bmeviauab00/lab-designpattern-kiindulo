@@ -1,63 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿namespace AppFx.CommandBinding;
 
-namespace AppFx.CommandBinding
+public class CommandBindingManager
 {
-    public class CommandBindingManager
+    public static CommandBindingManager Instance { get; } = new CommandBindingManager();
+
+    // Command binding-ok az állapot állításhoz
+    private readonly Dictionary<string, CommandBinding> commandBindingTable = new Dictionary<string, CommandBinding>();
+
+    /// <summary>
+    /// Létrehoz egy új command binding-ot és beregisztrálja az adott néven.
+    /// A név alapján lehet majd kikeresni és tiltani/engedélyezni.
+    /// A parancs futtatásakor az action paraméterben megadott eseménykezelő hívódik.
+    /// </summary>
+    public CommandBinding CreateCommandBinding(string commandName, Action action)
     {
-        static readonly CommandBindingManager instance = new CommandBindingManager();
+        var cmdBinding = new CommandBinding(action);
+        RegisterCommandBinding(commandName, cmdBinding);
+        return cmdBinding;
+    }
 
-        public static CommandBindingManager Instance
+    public CommandBinding CreateCommandBinding_WithUIConnections(string commandName, Action action, ToolStripItem items)
+    {
+        var cmdBinding = new CommandBinding(action);
+        RegisterCommandBinding(commandName, cmdBinding);
+        return cmdBinding;
+    }
+
+    public void EnableCommandBinding(string commandName, bool enable)
+    {
+        if (commandBindingTable.TryGetValue(commandName, out var cmdBinding))
         {
-            get { return instance; }
+            cmdBinding.IsEnabled = enable;
         }
+    }
 
-        // Command binding-ok az állapot állításhoz
-        readonly Dictionary<string, CommandBinding> commandBindingTable = new Dictionary<string, CommandBinding>();
-
-        /// <summary>
-        /// Létrehoz egy új command binding-ot és beregisztrálja az adott néven. A név alapján lehet majd kikeresni
-        /// és tiltani/engedélyezni. A parancs futtatásakor az action paraméterben megadott eseménykezelő hívódik.
-        /// </summary>
-        /// <param name="commandName"></param>
-        /// <param name="action"></param>
-        /// <returns></returns>
-        public CommandBinding CreateCommandBinding(string commandName, CommandBinding.Action action)
+    public void SelectCommandBinding(string commandName, bool selected)
+    {
+        if (commandBindingTable.TryGetValue(commandName, out var cmdBinding))
         {
-            CommandBinding cmdBinding = new CommandBinding(action);
-            registerCommandBinding(commandName, cmdBinding);
-            return cmdBinding;
+            cmdBinding.IsSelected = selected;
         }
-
-        //public CommandBinding CreateCommandBinding_WithUIConnections(string commandName,
-        //    CommandBinding.Action action, ToolStripItem items )
-        //{
-        //    CommandBinding cmdBinding = new CommandBinding(action);
-        //    registerCommandBinding(commandName, cmdBinding);
-        //    return cmdBinding;
-        //}
-
-        public void EnableCommandBinding(string commandName, bool enable)
-        {
-            CommandBinding cmdBinding;
-            if (commandBindingTable.TryGetValue(commandName, out cmdBinding))
-                cmdBinding.IsEnabled = enable;
-        }
-
-        public void SelectCommandBinding(string commandName, bool selected)
-        {
-            CommandBinding cmdBinding;
-            if (commandBindingTable.TryGetValue(commandName, out cmdBinding))
-                cmdBinding.IsSelected = selected;
-        }
+    }
 
 
-        private void registerCommandBinding(string commandName, CommandBinding cmdBinding)
-        {
-            commandBindingTable.Add(commandName, cmdBinding);
-        }
+    private void RegisterCommandBinding(string commandName, CommandBinding cmdBinding)
+    {
+        commandBindingTable.Add(commandName, cmdBinding);
     }
 }

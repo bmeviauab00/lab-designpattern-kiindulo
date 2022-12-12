@@ -1,92 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using AppFx.CommandBinding;
+﻿using AppFx.CommandBinding;
 
-namespace DesignPatternApp
+using DesignPatternApp.Commands;
+using DesignPatternApp.Documents;
+using DesignPatternApp.Helpers;
+
+namespace DesignPatternApp;
+
+public partial class App
 {
-    public partial class App
+    private MainForm mainForm;
+    private GraphicsView graphicsView;
+    private InfoPanel infoPanel;
+
+    private App()
     {
-        #region Singleton
+    }
 
-        static readonly App instance = new App();
+    public static App Instance { get; } = new App();
 
-        public static App Instance
-        {
-            get { return instance; }
-        }
+    public DrawingDocument Document { get; private set; }
 
-        private App()
-        { }
+    public void Initialize(MainForm mainForm, InfoPanel infoPanel)
+    {
+        this.mainForm = mainForm;
+        this.infoPanel = infoPanel;
 
-        #endregion
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewDocument, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.OpenDocument, true);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, false);
 
-        #region Fields
-        /// <summary>
-        /// Az alkalmazás főablaka
-        /// </summary>
-        private MainForm mainForm;
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
+        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
+    }
 
-        private DrawingDocument document;
-        private GraphicsView graphicsView;
-        private InfoPanel infoPanel;
+    public void SetSelectedShape(int shapeIndex)
+    {
+        if (Document == null)
+            return;
 
-        #endregion
+        // Figyelmen kívül hagyja a kérést, ha a régi index megegyezik az újjal (nem süt el változás eseményt)
+        Document.SelectedShapeIndex = shapeIndex;
+    }
 
-		public DrawingDocument Document
-        {
-            get { return document; }
-        }
-		
-        public void Initialize(MainForm mainForm, InfoPanel infoPanel)
-        {
-            this.mainForm = mainForm;
-            this.infoPanel = infoPanel;
+    public void RemoveShape(int shapeID)
+    {
+        if (Document == null)
+            return;
 
-            #region Documents
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewDocument, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.OpenDocument, true);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, false);
-            #endregion
+        Document.RemoveShape(shapeID);
+    }
 
-            #region Tools
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
-            CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
-            #endregion
-        }
+    public Rect CreateRandomRect()
+    {
+        return Document.CreateRect(RandomHelper.GetRandomRect());
+    }
 
-            // Figyelmen kívül hagyja a kérést, ha a régi index megegyezik az újjal (nem süt el változás eseményt)
-        public void SetSelectedShape(int shapeIndex)
-        {
-            if (document == null)
-                return;
-            document.SelectedShapeIndex = shapeIndex;
-        }
-
-        public void RemoveShape(int shapeID)
-        {
-            if (document == null)
-                return;
-
-            document.RemoveShape(shapeID);
-        }
-
-        public Rect CreateRandomRect()
-        {
-            return document.CreateRect(RandomHelper.GetRandomRect());
-        }
-
-        public Ellipse CreateRandomEllipse()
-        {
-            return document.CreateEllipse(RandomHelper.GetRandomRect());
-        }
-
+    public Ellipse CreateRandomEllipse()
+    {
+        return Document.CreateEllipse(RandomHelper.GetRandomRect());
     }
 }
