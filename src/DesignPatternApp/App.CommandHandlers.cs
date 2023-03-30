@@ -1,5 +1,6 @@
 ﻿using AppFx.Command;
-using AppFx.CommandBinding;
+
+using CommunityToolkit.Mvvm.Input;
 
 using DesignPatternApp.Commands;
 using DesignPatternApp.Documents;
@@ -8,6 +9,7 @@ namespace DesignPatternApp;
 
 public partial class App
 {
+    [RelayCommand]
     public void NewDocument()
     {
         CloseDocument();
@@ -18,26 +20,17 @@ public partial class App
         mainForm.SetLeftPanel(graphicsView);
         graphicsView.SetDocumentAndRegisterToDocEvents(Document);
         infoPanel.SetDocumentAndRegisterToDocEvents(Document);
-
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, true);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, true);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, true);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
-
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, true);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, true);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, true);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, true);
-
-        //AddTestData();
     }
 
+    [RelayCommand]
     public void OpenDocument()
     {
         ShowNotImplemented();
     }
 
+    public bool HasOpenDocument => Document != null;
+
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void CloseDocument()
     {
         // Nincs dokumentum megnyitva
@@ -50,49 +43,47 @@ public partial class App
         Document = null;
 
         commandProcessor.Clear();
-
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.CloseDocument, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveDocument, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SaveAsDocument, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
-
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.ClearDocument, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewRect, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
     }
 
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void SaveDocument()
     {
         ShowNotImplemented();
     }
 
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void SaveAsDocument()
     {
         ShowNotImplemented();
     }
 
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void SelectShape()
     {
         ShowNotImplemented();
     }
 
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void ClearDocument()
     {
         ExecuteCommand(new ClearCommand());
     }
 
+    public bool HasAnyCommand => commandProcessor.HasAny;
+
+    [RelayCommand(CanExecute = nameof(HasAnyCommand))]
     public void UndoLast()
     {
         UnexecuteLastCommand();
     }
 
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void NewRect()
     {
         ExecuteCommand(new NewRectCommand());
     }
 
+    [RelayCommand(CanExecute = nameof(HasOpenDocument))]
     public void NewEllipse()
     {
         ExecuteCommand(new NewEllipseCommand());
@@ -101,13 +92,13 @@ public partial class App
     private void ExecuteCommand(Command cmd)
     {
         commandProcessor.ExecuteCommand(cmd);
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, commandProcessor.HasAny);
+        UndoLastCommand.NotifyCanExecuteChanged();
     }
 
     private void UnexecuteLastCommand()
     {
         commandProcessor.UnExecuteLastCommand();
-        CommandBindingManager.Instance.EnableCommandBinding(CommandName.Undo, commandProcessor.HasAny);
+        UndoLastCommand.NotifyCanExecuteChanged();
     }
 
 
