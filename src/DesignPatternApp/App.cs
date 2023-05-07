@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using AppFx.Command;
 using AppFx.CommandBinding;
 
 namespace DesignPatternApp
@@ -33,13 +34,15 @@ namespace DesignPatternApp
         private GraphicsView graphicsView;
         private InfoPanel infoPanel;
 
+        readonly CommandProcessor commandProcessor = new CommandProcessor();
+
         #endregion
 
-		public DrawingDocument Document
+        public DrawingDocument Document
         {
             get { return document; }
         }
-		
+
         public void Initialize(MainForm mainForm, InfoPanel infoPanel)
         {
             this.mainForm = mainForm;
@@ -62,7 +65,21 @@ namespace DesignPatternApp
             #endregion
         }
 
-            // Figyelmen kívül hagyja a kérést, ha a régi index megegyezik az újjal (nem süt el változás eseményt)
+        void executeCommand(Command cmd)
+        {
+            commandProcessor.ExecuteCommand(cmd);
+            CommandBindingManager.Instance.EnableCommandBinding(
+                            CommandName.Undo, commandProcessor.HasAny);
+        }
+
+        void unexecuteLastCommand()
+        {
+            commandProcessor.UnExecuteLastCommand();
+            CommandBindingManager.Instance.EnableCommandBinding(
+                            CommandName.Undo, commandProcessor.HasAny);
+        }
+
+        // Figyelmen kívül hagyja a kérést, ha a régi index megegyezik az újjal (nem süt el változás eseményt)
         public void SetSelectedShape(int shapeIndex)
         {
             if (document == null)

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace DesignPatternApp
 {
+    /// <summary>
+    /// Alakzat osztályok őse.
+    /// </summary>
     public abstract class Shape
     {
         // Annak érdekében, hogy később a Memento minta megvalósítása során az alakzatot 

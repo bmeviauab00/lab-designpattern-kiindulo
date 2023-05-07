@@ -16,7 +16,7 @@ namespace DesignPatternApp
         public GraphicsView()
         {
             InitializeComponent();
-			DoubleBuffered = true;
+            DoubleBuffered = true;
         }
 
         protected override void RegisterToDocEvents()

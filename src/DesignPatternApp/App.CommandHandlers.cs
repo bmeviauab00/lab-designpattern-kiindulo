@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AppFx.CommandBinding;
+using AppFx.Command;
+using DesignPatternApp.Commands;
 
 namespace DesignPatternApp
 {
@@ -36,7 +38,7 @@ namespace DesignPatternApp
             CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, true);
             #endregion
 
-            addTestData();
+            // addTestData();
         }
 
         void addTestData()
@@ -60,7 +62,7 @@ namespace DesignPatternApp
 
         public void CloseDocument()
         {
-            // Nincs dokumentum megnyitva
+            // Nincs dokumentum megcsintva
             if (document == null)
                 return;
 
@@ -83,6 +85,8 @@ namespace DesignPatternApp
             CommandBindingManager.Instance.EnableCommandBinding(CommandName.NewEllipse, false);
             CommandBindingManager.Instance.EnableCommandBinding(CommandName.SelectShape, false);
             #endregion
+			
+			commandProcessor.Clear();
         }
 
         public void SaveDocument()
@@ -105,24 +109,23 @@ namespace DesignPatternApp
 
         public void ClearDocument()
         {
-            showNotImplemented();
+            executeCommand(new ClearCommand());
         }
 
         public void UndoLast()
         {
-            showNotImplemented();
+            unexecuteLastCommand();
         }
 
         public void NewRect()
         {
-            showNotImplemented();
+            executeCommand(new NewRectCommand());
         }
 
         public void NewEllipse()
         {
-            showNotImplemented();
+            executeCommand(new NewEllipseCommand());
         }
-
 
         #endregion
 

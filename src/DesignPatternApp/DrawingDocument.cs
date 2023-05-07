@@ -8,10 +8,10 @@ using AppFx.DocView;
 
 namespace DesignPatternApp
 {
-    public class DrawingDocument: Document
+    public partial class DrawingDocument: Document
     {
         List<Shape> shapes = new List<Shape>();
-        private Shape selectedShape;
+        Shape selectedShape;
 
         #region Events
 
@@ -72,12 +72,11 @@ namespace DesignPatternApp
                     return;
                 if (value == -1)
                     SelectedShape = null;
-				else
-					SelectedShape = shapes[value];
+                else
+                    SelectedShape = shapes[value];
             }
         }
-
-
+        
         void fireShapesChanged()
         {
             if (ShapesChanged != null)
@@ -97,7 +96,6 @@ namespace DesignPatternApp
             fireShapesChanged();
             return shape;
         }
-
         public Ellipse CreateEllipse(Rectangle enclosingRectangle)
         {
             var shape = new Ellipse(enclosingRectangle);
@@ -112,7 +110,7 @@ namespace DesignPatternApp
             Shape shapeToRemove = null;
             foreach (var shape in shapes)
                 if (shape.Id == shapeId)
-                {
+                { 
                     shapeToRemove = shape;
                     break;
                 }
@@ -135,6 +133,18 @@ namespace DesignPatternApp
             shapes.Clear();
             fireShapesChanged();
             SelectedShape = null;
+        }
+
+        public Memento CreateMemento()
+        {
+            return new Memento(shapes, selectedShape);
+        }
+
+        public void RestoreFromMemento(Memento m)
+        {
+            m.GetState(out shapes, out selectedShape);
+            fireShapesChanged();
+            fireSelectionChanged();
         }
     }
 }
